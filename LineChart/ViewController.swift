@@ -10,14 +10,13 @@ import UIKit
 
 class ViewController: UIViewController {
 
+    @IBOutlet weak var lineChart: LineChart!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
         
-        
+        lineChart.dataEntries = [PointEntry(value: 0, title: "aa"), PointEntry(value: 100, title: "aa"), PointEntry(value: 100, title: "aa"), PointEntry(value: 300, title: "aa"), PointEntry(value: 500, title: "aa"), PointEntry(value: 200, title: "aa"),PointEntry(value: 50, title: "aa"),PointEntry(value: 300, title: "aa"),PointEntry(value: 600, title: "aa")]
+        lineChart.isCurved = true
     }
 }
 
