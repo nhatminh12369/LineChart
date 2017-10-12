@@ -10,16 +10,34 @@ import UIKit
 
 class ViewController: UIViewController {
 
+    
     @IBOutlet weak var lineChart: LineChart!
+    @IBOutlet weak var curvedlineChart: LineChart!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         self.view.backgroundColor = #colorLiteral(red: 0, green: 0.3529411765, blue: 0.6156862745, alpha: 1)
         
-        //lineChart.dataEntries = [PointEntry(value: 0, title: "aa"), PointEntry(value: 100, title: "aa"), PointEntry(value: 100, title: "aa"), PointEntry(value: 300, title: "aa"), PointEntry(value: 500, title: "aa"), PointEntry(value: 200, title: "aa"),PointEntry(value: 50, title: "aa"),PointEntry(value: 300, title: "aa"),PointEntry(value: 600, title: "aa")]
-        lineChart.dataEntries = generateRandomEntries()
-        lineChart.isCurved = true
+        // Sample dataset
+//        let dataEntries = [PointEntry(value: 0, title: ""), PointEntry(value: 100, title: ""), PointEntry(value: 100, title: ""), PointEntry(value: 100, title: ""), PointEntry(value: 20, title: ""), PointEntry(value: 30, title: ""), PointEntry(value: 120, title: "")]
+        
+        let dataEntries = generateRandomEntries()
+        
+        lineChart.dataEntries = dataEntries
+        lineChart.isCurved = false
+        
+        curvedlineChart.dataEntries = dataEntries
+        curvedlineChart.isCurved = true
+        
+//        Timer.scheduledTimer(withTimeInterval: 3.0, repeats: true) { (timer) in
+//            let dataEntries = self.generateRandomEntries()
+//            
+//            self.lineChart.dataEntries = dataEntries
+//            
+//            self.curvedlineChart.dataEntries = dataEntries
+//            
+//        }
     }
     
     private func generateRandomEntries() -> [PointEntry] {

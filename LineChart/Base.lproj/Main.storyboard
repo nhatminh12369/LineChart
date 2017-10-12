@@ -21,8 +21,15 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Oud-5o-amy" customClass="LineChart" customModule="LineChart" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="30" width="375" height="300"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="300" id="W7g-fO-P6q"/>
+                                </constraints>
+                            </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="I1u-wa-pxC" customClass="LineChart" customModule="LineChart" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="183.5" width="375" height="300"/>
+                                <rect key="frame" x="0.0" y="360" width="375" height="300"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="300" id="Vit-IV-VmP"/>
@@ -32,12 +39,16 @@
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstAttribute="trailing" secondItem="I1u-wa-pxC" secondAttribute="trailing" id="2xg-nz-weY"/>
+                            <constraint firstItem="Oud-5o-amy" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="10" id="EJj-B8-GpA"/>
+                            <constraint firstAttribute="trailing" secondItem="Oud-5o-amy" secondAttribute="trailing" id="NBR-S7-rGk"/>
+                            <constraint firstItem="Oud-5o-amy" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="Pk3-gs-KLm"/>
                             <constraint firstItem="I1u-wa-pxC" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="lXz-S9-yIU"/>
-                            <constraint firstItem="I1u-wa-pxC" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="sa9-wU-U5U"/>
+                            <constraint firstItem="I1u-wa-pxC" firstAttribute="top" secondItem="Oud-5o-amy" secondAttribute="bottom" constant="30" id="qeS-ex-nX5"/>
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="lineChart" destination="I1u-wa-pxC" id="z8s-ou-5fY"/>
+                        <outlet property="curvedlineChart" destination="I1u-wa-pxC" id="GEQ-RO-TXG"/>
+                        <outlet property="lineChart" destination="Oud-5o-amy" id="YAw-iG-GoJ"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
