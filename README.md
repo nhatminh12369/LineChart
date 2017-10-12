@@ -3,7 +3,7 @@ This code demonstrate a way to build your own line chart without using any third
 
 # Demo
 
-![demo](https://raw.githubusercontent.com/nhatminh12369/LineChart/master/demo.png =300px)
+![demo](https://raw.githubusercontent.com/nhatminh12369/LineChart/master/demo.png =300x)
 
 # Tutorial
 [Tutorial on Medium](https://medium.com/@leonardnguyen/building-your-own-chart-in-ios-part-2-line-chart-7b5cfc7c866)
