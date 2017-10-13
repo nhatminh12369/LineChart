@@ -16,7 +16,7 @@ struct CurvedSegment {
 class CurveAlgorithm {
     static let shared = CurveAlgorithm()
     
-    func controlPointsFrom(points: [CGPoint]) -> [CurvedSegment] {
+    private func controlPointsFrom(points: [CGPoint]) -> [CurvedSegment] {
         var result: [CurvedSegment] = []
         
         let delta: CGFloat = 0.3 // The value that help to choose temporary control points.
@@ -53,5 +53,21 @@ class CurveAlgorithm {
         }
         
         return result
+    }
+    
+    /**
+     Create a curved bezier path that connects all points in the dataset
+     */
+    func createCurvedPath(_ dataPoints: [CGPoint]) -> UIBezierPath? {
+        let path = UIBezierPath()
+        path.move(to: dataPoints[0])
+        
+        var curveSegments: [CurvedSegment] = []
+        curveSegments = controlPointsFrom(points: dataPoints)
+        
+        for i in 1..<dataPoints.count {
+            path.addCurve(to: dataPoints[i], controlPoint1: curveSegments[i-1].controlPoint1, controlPoint2: curveSegments[i-1].controlPoint2)
+        }
+        return path
     }
 }

@@ -10,7 +10,7 @@ import UIKit
 
 struct PointEntry {
     let value: Int
-    let title: String
+    let label: String
 }
 
 extension PointEntry: Comparable {
@@ -32,6 +32,9 @@ class LineChart: UIView {
     
     /// preserved space at bottom of the chart to show labels along the Y axis
     let bottomSpace: CGFloat = 40.0
+    
+    /// The top most horizontal line in the chart will be 10% higher than the highest value in the chart
+    let topHorizontalLine: CGFloat = 110.0 / 100.0
     
     var isCurved: Bool = false
     
@@ -103,7 +106,7 @@ class LineChart: UIView {
                 drawChart()
             }
             maskGradientLayer()
-            drawTitles()
+            drawLables()
         }
     }
     
@@ -115,10 +118,10 @@ class LineChart: UIView {
             let min = entries.min()?.value {
             
             var result: [CGPoint] = []
-            let minMaxRange = (max - min) * 110 / 100
+            let minMaxRange: CGFloat = CGFloat(max - min) * topHorizontalLine
             
             for i in 0..<entries.count {
-                let height = dataLayer.frame.height * (1 - CGFloat(entries[i].value) / CGFloat(minMaxRange))
+                let height = dataLayer.frame.height * (1 - CGFloat(entries[i].value) / minMaxRange)
                 let point = CGPoint(x: CGFloat(i)*lineGap + 40, y: height)
                 result.append(point)
             }
@@ -166,32 +169,13 @@ class LineChart: UIView {
         guard let dataPoints = dataPoints, dataPoints.count > 0 else {
             return
         }
-        if let path = createCurvedPath() {
+        if let path = CurveAlgorithm.shared.createCurvedPath(dataPoints) {
             let lineLayer = CAShapeLayer()
             lineLayer.path = path.cgPath
             lineLayer.strokeColor = UIColor.white.cgColor
             lineLayer.fillColor = UIColor.clear.cgColor
             dataLayer.addSublayer(lineLayer)
         }
-    }
-    
-    /**
-     Create a curved bezier path that connects all points in dataPoints
-     */
-    private func createCurvedPath() -> UIBezierPath? {
-        guard let dataPoints = dataPoints, dataPoints.count > 0 else {
-            return nil
-        }
-        let path = UIBezierPath()
-        path.move(to: dataPoints[0])
-        
-        var curveSegments: [CurvedSegment] = []
-        curveSegments = CurveAlgorithm.shared.controlPointsFrom(points: dataPoints)
-        
-        for i in 1..<dataPoints.count {
-            path.addCurve(to: dataPoints[i], controlPoint1: curveSegments[i-1].controlPoint1, controlPoint2: curveSegments[i-1].controlPoint2)
-        }
-        return path
     }
     
     /**
@@ -205,7 +189,7 @@ class LineChart: UIView {
             path.move(to: CGPoint(x: dataPoints[0].x, y: dataLayer.frame.height))
             path.addLine(to: dataPoints[0])
             if isCurved,
-                let curvedPath = createCurvedPath() {
+                let curvedPath = CurveAlgorithm.shared.createCurvedPath(dataPoints) {
                 path.append(curvedPath)
             } else if let straightPath = createPath() {
                 path.append(straightPath)
@@ -226,7 +210,7 @@ class LineChart: UIView {
     /**
      Create titles at the bottom for all entries showed in the chart
      */
-    private func drawTitles() {
+    private func drawLables() {
         if let dataEntries = dataEntries,
             dataEntries.count > 0 {
             for i in 0..<dataEntries.count {
@@ -238,7 +222,7 @@ class LineChart: UIView {
                 textLayer.contentsScale = UIScreen.main.scale
                 textLayer.font = CTFontCreateWithName(UIFont.systemFont(ofSize: 0).fontName as CFString, 0, nil)
                 textLayer.fontSize = 11
-                textLayer.string = dataEntries[i].title
+                textLayer.string = dataEntries[i].label
                 mainLayer.addSublayer(textLayer)
             }
         }
@@ -277,10 +261,10 @@ class LineChart: UIView {
                 
                 gridLayer.addSublayer(lineLayer)
                 
-                var minMaxGap = 0
+                var minMaxGap:CGFloat = 0
                 if let max = dataEntries.max()?.value,
                     let min = dataEntries.min()?.value {
-                    minMaxGap = (max - min) * 110 / 100
+                    minMaxGap = CGFloat(max - min) * topHorizontalLine
                 }
                 
                 let textLayer = CATextLayer()
@@ -290,7 +274,7 @@ class LineChart: UIView {
                 textLayer.contentsScale = UIScreen.main.scale
                 textLayer.font = CTFontCreateWithName(UIFont.systemFont(ofSize: 0).fontName as CFString, 0, nil)
                 textLayer.fontSize = 12
-                textLayer.string = "\(Int((1-value) * CGFloat(minMaxGap)))"
+                textLayer.string = "\(Int((1-value) * minMaxGap))"
                 
                 gridLayer.addSublayer(textLayer)
             }

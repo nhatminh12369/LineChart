@@ -28,16 +28,7 @@ class ViewController: UIViewController {
         lineChart.isCurved = false
         
         curvedlineChart.dataEntries = dataEntries
-        curvedlineChart.isCurved = true
-        
-//        Timer.scheduledTimer(withTimeInterval: 3.0, repeats: true) { (timer) in
-//            let dataEntries = self.generateRandomEntries()
-//            
-//            self.lineChart.dataEntries = dataEntries
-//            
-//            self.curvedlineChart.dataEntries = dataEntries
-//            
-//        }
+        curvedlineChart.isCurved = true        
     }
     
     private func generateRandomEntries() -> [PointEntry] {
@@ -50,7 +41,7 @@ class ViewController: UIViewController {
             var date = Date()
             date.addTimeInterval(TimeInterval(24*60*60*i))
             
-            result.append(PointEntry(value: value, title: formatter.string(from: date)))
+            result.append(PointEntry(value: value, label: formatter.string(from: date)))
         }
         return result
     }
