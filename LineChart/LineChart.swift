@@ -121,7 +121,7 @@ class LineChart: UIView {
             let minMaxRange: CGFloat = CGFloat(max - min) * topHorizontalLine
             
             for i in 0..<entries.count {
-                let height = dataLayer.frame.height * (1 - CGFloat(entries[i].value) / minMaxRange)
+                let height = dataLayer.frame.height * (1 - ((CGFloat(entries[i].value) - CGFloat(min)) / minMaxRange))
                 let point = CGPoint(x: CGFloat(i)*lineGap + 40, y: height)
                 result.append(point)
             }
@@ -262,9 +262,11 @@ class LineChart: UIView {
                 gridLayer.addSublayer(lineLayer)
                 
                 var minMaxGap:CGFloat = 0
+                var lineValue:Int = 0
                 if let max = dataEntries.max()?.value,
                     let min = dataEntries.min()?.value {
                     minMaxGap = CGFloat(max - min) * topHorizontalLine
+                    lineValue = Int((1-value) * minMaxGap) + Int(min)
                 }
                 
                 let textLayer = CATextLayer()
@@ -274,7 +276,7 @@ class LineChart: UIView {
                 textLayer.contentsScale = UIScreen.main.scale
                 textLayer.font = CTFontCreateWithName(UIFont.systemFont(ofSize: 0).fontName as CFString, 0, nil)
                 textLayer.fontSize = 12
-                textLayer.string = "\(Int((1-value) * minMaxGap))"
+                textLayer.string = "\(lineValue)"
                 
                 gridLayer.addSublayer(textLayer)
             }
