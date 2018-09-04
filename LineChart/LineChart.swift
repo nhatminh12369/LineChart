@@ -41,6 +41,9 @@ class LineChart: UIView {
     /// Active or desactive animation on dots
     var animateDots: Bool = false
 
+    /// Active or desactive dots
+    var showDots: Bool = false
+
     /// Dot inner Radius
     var innerRadius: CGFloat = 8
 
@@ -106,8 +109,7 @@ class LineChart: UIView {
             gradientLayer.frame = dataLayer.frame
             dataPoints = convertDataEntriesToPoints(entries: dataEntries)
             gridLayer.frame = CGRect(x: 0, y: topSpace, width: self.frame.width, height: mainLayer.frame.height - topSpace - bottomSpace)
-
-            drawDots()
+            if showDots { drawDots() }
             clean()
             drawHorizontalLines()
             if isCurved {
