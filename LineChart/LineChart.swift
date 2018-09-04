@@ -37,6 +37,15 @@ class LineChart: UIView {
     let topHorizontalLine: CGFloat = 110.0 / 100.0
     
     var isCurved: Bool = false
+
+    /// Active or desactive animation on dots
+    var animateDots: Bool = false
+
+    /// Dot inner Radius
+    var innerRadius: CGFloat = 8
+
+    /// Dot outer Radius
+    var outerRadius: CGFloat = 12
     
     var dataEntries: [PointEntry]? {
         didSet {
@@ -61,7 +70,7 @@ class LineChart: UIView {
     
     /// An array of CGPoint on dataLayer coordinate system that the main line will go through. These points will be calculated from dataEntries array
     private var dataPoints: [CGPoint]?
-    
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
@@ -97,7 +106,8 @@ class LineChart: UIView {
             gradientLayer.frame = dataLayer.frame
             dataPoints = convertDataEntriesToPoints(entries: dataEntries)
             gridLayer.frame = CGRect(x: 0, y: topSpace, width: self.frame.width, height: mainLayer.frame.height - topSpace - bottomSpace)
-            
+
+            drawDots()
             clean()
             drawHorizontalLines()
             if isCurved {
@@ -145,7 +155,7 @@ class LineChart: UIView {
             dataLayer.addSublayer(lineLayer)
         }
     }
-    
+
     /**
      Create a zigzag bezier path that connects all points in dataPoints
      */
@@ -291,5 +301,34 @@ class LineChart: UIView {
         })
         dataLayer.sublayers?.forEach({$0.removeFromSuperlayer()})
         gridLayer.sublayers?.forEach({$0.removeFromSuperlayer()})
+    }
+    /**
+     Create Dots on line points
+     */
+    private func drawDots() {
+        var dotLayers: [DotCALayer] = []
+        if let dataPoints = dataPoints {
+            for dataPoint in dataPoints {
+                let xValue = dataPoint.x - outerRadius/2
+                let yValue = (dataPoint.y + lineGap) - (outerRadius * 2)
+                let dotLayer = DotCALayer()
+                dotLayer.dotInnerColor = UIColor.white
+                dotLayer.innerRadius = innerRadius
+                dotLayer.backgroundColor = UIColor.white.cgColor
+                dotLayer.cornerRadius = outerRadius / 2
+                dotLayer.frame = CGRect(x: xValue, y: yValue, width: outerRadius, height: outerRadius)
+                dotLayers.append(dotLayer)
+
+                mainLayer.addSublayer(dotLayer)
+
+                if animateDots {
+                    let anim = CABasicAnimation(keyPath: "opacity")
+                    anim.duration = 1.0
+                    anim.fromValue = 0
+                    anim.toValue = 1
+                    dotLayer.add(anim, forKey: "opacity")
+                }
+            }
+        }
     }
 }
