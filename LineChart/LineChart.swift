@@ -49,6 +49,12 @@ class LineChart: UIView {
 
     /// Dot outer Radius
     var outerRadius: CGFloat = 12
+
+    ///Indicates if lines is colored
+    var hasColoredLines: Bool = false
+
+    ///Define array of line colors
+    var linesColors: [UIColor]?
     
     var dataEntries: [PointEntry]? {
         didSet {
@@ -115,7 +121,11 @@ class LineChart: UIView {
             if isCurved {
                 drawCurvedChart()
             } else {
-                drawChart()
+                if hasColoredLines {
+                    drawChartColoredLines()
+                } else {
+                    drawChart()
+                }
             }
             maskGradientLayer()
             drawLables()
@@ -333,4 +343,67 @@ class LineChart: UIView {
             }
         }
     }
+    /**
+     Draw a zigzag colored lines connecting all points in dataPoints
+     */
+    private func drawChartColoredLines() {
+        if let dataPoints = dataPoints,
+            dataPoints.count > 0 {
+            var lastPoint = CGPoint(x: 0, y: 0)
+            var strokeColorLine = UIColor.white.cgColor
+            for i in 1..<dataPoints.count {
+                if i == 0 {
+                    lastPoint = dataPoints[0]
+                } else {
+                    lastPoint = dataPoints[i - 1]
+                }
+                if let path = createLinePath(initialPoint:lastPoint, moveToPoint: dataPoints[i]){
+                    let lineLayer = CAShapeLayer()
+                    lineLayer.path = path.cgPath
+                    if hasColoredLines { strokeColorLine = getColorLine(by: i) }
+                    lineLayer.strokeColor = strokeColorLine
+                    lineLayer.fillColor = UIColor.clear.cgColor
+                    dataLayer.addSublayer(lineLayer)
+                }
+            }
+        }
+    }
+    /**
+     Get color line by datePoint index if linesColors no range from index return a last color from array
+     */
+    private func getColorLine(by index: Int) -> CGColor {
+        if let unwrappedLinesColors = linesColors {
+            if unwrappedLinesColors.indices.contains(index) {
+                return unwrappedLinesColors[index].cgColor
+            } else {
+                return unwrappedLinesColors.last!.cgColor
+            }
+        } else {
+            return RandomColors[Int(arc4random_uniform(UInt32(RandomColors.count)))].cgColor
+        }
+    }
+
+    /**
+     Create a single bezier path that connects all points in dataPoints
+     */
+    private func createLinePath(initialPoint: CGPoint, moveToPoint: CGPoint) -> UIBezierPath? {
+        let path = UIBezierPath()
+        path.move(to: initialPoint)
+        path.addLine(to: moveToPoint)
+        return path
+    }
+    
+    /// Random Colors to use on Chart with colored lines
+    open var RandomColors: [UIColor] = [
+        UIColor(red: 0.121569, green: 0.466667, blue: 0.705882, alpha: 1),
+        UIColor(red: 1, green: 0.498039, blue: 0.054902, alpha: 1),
+        UIColor(red: 0.172549, green: 0.627451, blue: 0.172549, alpha: 1),
+        UIColor(red: 0.839216, green: 0.152941, blue: 0.156863, alpha: 1),
+        UIColor(red: 0.580392, green: 0.403922, blue: 0.741176, alpha: 1),
+        UIColor(red: 0.54902, green: 0.337255, blue: 0.294118, alpha: 1),
+        UIColor(red: 0.890196, green: 0.466667, blue: 0.760784, alpha: 1),
+        UIColor(red: 0.498039, green: 0.498039, blue: 0.498039, alpha: 1),
+        UIColor(red: 0.737255, green: 0.741176, blue: 0.133333, alpha: 1),
+        UIColor(red: 0.0901961, green: 0.745098, blue: 0.811765, alpha: 1)
+    ]
 }
